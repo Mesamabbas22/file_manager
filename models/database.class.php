@@ -1,11 +1,12 @@
 <?php
 
 class database {
-	public function connect() {
+	private $pdo;
+	public function __construct() {
 		try{
-			$connect = new PDO('mysql:host=127.0.0.1;dbname=file_manager', 'root', '');
-			$connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			return $connect;
+			$this->pdo = new PDO('mysql:host=127.0.0.1;dbname=file_manager', 'root', '');
+			$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			return $this->pdo;
 		}
 		catch(PDOException $e) {
 			echo " Connection Failed " . $e->getMessage();
