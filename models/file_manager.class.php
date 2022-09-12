@@ -17,10 +17,10 @@ class file_manager{
     }
 
     public function sign_up($first_name,$last_name,$user_name,$email,$password){
-        $chack_query = "SELECT * FROM users WHERE user_name = ? AND email = ?";
+        $chack_query = "SELECT * FROM users WHERE user_name = ? || email = ?";
         $select_prepare = $this->pdo->prepare($chack_query);
         $select_prepare->execute([$user_name,$email]);
-        $row = $select_prepare->fetchColumn();
+        $row = $select_prepare->rowCount();
         if($row == 0){
             $query = "INSERT users(first_name, last_name, user_name, email, password, token, created_at ,updated_at,flg_delete) VALUES(?,?,?,?,?,?,?,?,?)";
             $prepare = $this->pdo->prepare($query);
@@ -33,8 +33,22 @@ class file_manager{
         }
             
     }
+    public function sign_in($email,$password){
+        $query = "SELECT * FROM users WHERE email = ? AND password = ?";
+        $prepare = $this->pdo->prepare($query);
+        $execute = $prepare->execute([$email,sha1($password)]);
+        $row = $prepare->rowCount();
+        if($execute == true){
+            print_r($row);
+            if($row == 1){
+                echo 'Sign In Success';
+            }else{
+                echo 'Sign In Faild';
+            }
+        }
+    }
 }
 $obj = new file_manager();
-$obj->sign_up('Mesa','Abbas','saqlain12','saqlain128@gmai.com','mesaabc');
-
+$obj->sign_up('Mesam','Abbas','ab','ab@gmail.com','ab');
+$obj->sign_in('abc@gmail.com','ab');
 ?>
