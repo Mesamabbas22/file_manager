@@ -27,6 +27,15 @@ class file_manager{
             $execute = $prepare->execute([$first_name,$last_name,$user_name,$email,sha1($password),rand(),date("Y/m/d h:i:sa"),0,0]);
             if($execute == true){
                 echo 'Done';
+                session_start();
+                $_SESSION['user'] = $user_name;
+                $_SESSION['email'] = $email;
+                if($_SESSION['user'] == true && $_SESSION['email'] == true){
+                    header('location: ../index.php');
+                }else{
+                
+                    header('location: ../sign_up.php ');
+                }
             }
         }else{
             echo 'Data already exists';
@@ -39,8 +48,8 @@ class file_manager{
         $execute = $prepare->execute([$email,sha1($password)]);
         $row = $prepare->rowCount();
         if($execute == true){
-            print_r($row);
             if($row == 1){
+               return $prepare->fetchAll(PDO::FETCH_BOTH);
                 echo 'Sign In Success';
             }else{
                 echo 'Sign In Faild';
@@ -48,7 +57,4 @@ class file_manager{
         }
     }
 }
-$obj = new file_manager();
-$obj->sign_up('Mesam','Abbas','ab','ab@gmail.com','ab');
-$obj->sign_in('abc@gmail.com','ab');
 ?>
