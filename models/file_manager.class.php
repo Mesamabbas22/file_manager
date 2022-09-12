@@ -16,20 +16,25 @@ class file_manager{
             date_default_timezone_set("Asia/Karachi");
     }
 
-    public function sign_up($form){
-        if($form !=null){
-            print_r($form);
-            
-            $query = "INSERT users(first_name, last_name, user_name, email, password, token, created_at) VALUES(?,?,?,?,?,?,?)";
+    public function sign_up($first_name,$last_name,$user_name,$email,$password){
+        $chack_query = "SELECT * FROM users WHERE user_name = ? AND email = ?";
+        $select_prepare = $this->pdo->prepare($chack_query);
+        $select_prepare->execute([$user_name,$email]);
+        $row = $select_prepare->fetchColumn();
+        if($row == 0){
+            $query = "INSERT users(first_name, last_name, user_name, email, password, token, created_at ,updated_at,flg_delete) VALUES(?,?,?,?,?,?,?,?,?)";
             $prepare = $this->pdo->prepare($query);
-            $execute = $prepare->execute(['Muhammad','Saqlain','saqlain20','saqlain128@gmail.com',sha1('saqlain'),rand(),date("Y/m/d h:i:sa")]);
+            $execute = $prepare->execute([$first_name,$last_name,$user_name,$email,sha1($password),rand(),date("Y/m/d h:i:sa"),0,0]);
             if($execute == true){
                 echo 'Done';
             }
+        }else{
+            echo 'Data already exists';
         }
+            
     }
 }
-// $obj = new file_manager();
-// $obj->sign_up(array('Mesam','Abbas','mesamabbas20','Mesambbas128@gmail.com','mesaabc'));
+$obj = new file_manager();
+$obj->sign_up('Mesa','Abbas','saqlain12','saqlain128@gmai.com','mesaabc');
 
 ?>
